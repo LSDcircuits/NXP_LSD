@@ -1,0 +1,34 @@
+file used to flash the controller or commands to flahs the controller. 
+
+// chekc for openOCD
+arm-none-eabi-gcc --version
+openocd --version
+
+// check usb
+system_profiler SPUSBDataType
+
+// shoudl work with this to be automted with pyside
+openocd -f interface/cmsis-dap.cfg -f target/lpc84x.cfg \
+  -c "program lpc845_project verify reset exit"
+
+
+// check serial devices
+ls /dev/tty.*
+
+// CMIS 
+openocd \
+-f interface/cmsis-dap.cfg \
+-f target/lpc8xx.cfg \
+-c "program lpc845_project verify reset exit"
+
+// JLINk
+openocd \
+-f interface/jlink.cfg \
+-f target/lpc8xx.cfg \
+-c "program lpc845_project verify reset exit"
+
+
+openocd \
+-f interface/cmsis-dap.cfg \
+-f target/lpc8xx.cfg \
+-c "program lpc845_project verify reset exit"
