@@ -6,7 +6,7 @@ Interfaces and low frequency control systems (<1MHZ).
 
 Functions:
 
-PWM    X
+PWM    X base register 0x5000 8000
 CTIMER √
 GPIO   √
 DAC    √
