@@ -1,8 +1,6 @@
-# NXP_LSD
-This repository is dedicated to using the LPC84X series.
-Made for the Purpose of having a simpler approach to programming
-Interfaces and low frequency control systems (<1MHZ).
-
+NXP_LSD
+This repository is dedicated to using the LPC84X series,
+Functions for Hardware peripherals (i/o)
 
 Functions:
 
