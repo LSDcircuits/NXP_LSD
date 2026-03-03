@@ -6,6 +6,7 @@ Interfaces and low frequency control systems (<1MHZ).
 
 Functions:
 
+PWM    X
 CTIMER √
 GPIO   √
 DAC    √
