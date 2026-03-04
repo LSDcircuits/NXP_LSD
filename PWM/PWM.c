@@ -31,13 +31,17 @@
 // SCTIMER0->CONFIG &= ~(1 << 0) | UNIFY = 0 | TWO 16 bit timers  
 // SCTIMER0->CONFIG |=  (1 << 0) | UNIFY = 1 | SINGLE 32 bit timer
 
-
+// If UNIFY = 1 in the CONFIG register, only the _L bits of this register are used. In this case,
+// REGMODE_H is not used.
 
 SCTIMER CTRL 
 
 SCTIMER0->CTRL |= (1 << 4);
+
+
 void pwm_init(void){
     SYSCON->SYSAHBCLKCRTL0 |= (1 << 8); // clock enable SCT
     SYSCON->PRESETCTRL0 &= ~(1 << 8); // Reset values 
-    SCTIMER->UNIFY = 1;
+    SCTIMER0->CTRL &= ~(1 << 4); 
+    SCTIMER0->CONFIG |=  (1 << 0);
 }
