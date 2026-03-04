@@ -25,7 +25,7 @@
 // 5. output    | SWIM   		    |
 // 6. Request   | DMA_ITRIG_PINMUX  |
 
-
+// counter // match // Event // output // SCT_OUT 
 // SCTIMER CONFIG:
 
 // SCTIMER0->CONFIG &= ~(1 << 0) | UNIFY = 0 | TWO 16 bit timers  
@@ -45,3 +45,13 @@ void pwm_init(void){
     SCTIMER0->CTRL &= ~(1 << 4); 
     SCTIMER0->CONFIG |=  (1 << 0);
 }
+
+void pwm_out(){
+    SCTIMER0->MATCHL[0] = period;
+    SCTIMER0->MATCHL[1] = duty;
+}
+
+
+
+
+
