@@ -35,17 +35,17 @@
 // REGMODE_H is not used.
 // find match registers
 
-| Field        | Purpose                                        |
-| ------------ | ---------------------------------------------- |
-| **MATCHSEL** | Select which MATCH register triggers the event |
-| **COMBMODE** | How match/input conditions combine             |
-| **STATELD**  | Load a new state (not needed for simple PWM)   |
-| **STATEV**   | State value to load                            |
-| **IOSEL**    | Input pin selection                            |
-| **IOCOND**   | Input condition                                |
-| **OUTSEL**   | Output selection                               |
-| **IOEN**     | Enable input trigger                           |
-| **MATCHMEM** | Enable match trigger                           |
+// | Field        | Purpose                                        |
+// | ------------ | ---------------------------------------------- |
+// | **MATCHSEL** | Select which MATCH register triggers the event |
+// | **COMBMODE** | How match/input conditions combine             |
+// | **STATELD**  | Load a new state (not needed for simple PWM)   |
+// | **STATEV**   | State value to load                            |
+// | **IOSEL**    | Input pin selection                            |
+// | **IOCOND**   | Input condition                                |
+// | **OUTSEL**   | Output selection                               |
+// | **IOEN**     | Enable input trigger                           |
+// | **MATCHMEM** | Enable match trigger                           |
 
 SCTIMER CTRL 
 
