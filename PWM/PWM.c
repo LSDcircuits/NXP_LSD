@@ -47,6 +47,12 @@
 // | **IOEN**     | Enable input trigger                           |
 // | **MATCHMEM** | Enable match trigger                           |
 
+
+void pwm_setDuty(uint32_t duty)
+{
+    SCT0->MATCHREL[1].U = duty;
+}
+
 SCTIMER CTRL 
 
 SCTIMER0->CTRL |= (1 << 4);
