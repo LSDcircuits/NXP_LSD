@@ -5,15 +5,15 @@ Match registers:
 Match conditions:
 
 Counter:
+
 counter value can be used in conjection with match registers
 to create time proportioned PWM signal.
 
 For output:
-SCT_OUT0_O () -> value is the Pin assigned table 188
 
+SCT_OUT0_O () -> value is the Pin assigned table 188
 SCTIMER0->CONFIG &= ~(1 << 0) | UNIFY = 0 | TWO 16 bit timers
 SCTIMER0->CONFIG |=  (1 << 0) | UNIFY = 1 | SINGLE 32 bit timer
-
 
 init()
 ________________________________________
@@ -31,18 +31,6 @@ PWM operation (21.7.9)
 2. Match ()
 3. event (21.7.10.3) 
 
-
-
-SCTIMER CONFIG:
-
-SCTIMER0->CONFIG &= ~(1 << 0) | UNIFY = 0 | TWO 16 bit timers  
-SCTIMER0->CONFIG |=  (1 << 0) | UNIFY = 1 | SINGLE 32 bit timer
-
-
-
-SCTIMER CTRL 
-
-SCTIMER0->CTRL |= (1 << 4);
 
 
 
