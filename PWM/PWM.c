@@ -33,7 +33,7 @@
 
 // If UNIFY = 1 in the CONFIG register, only the _L bits of this register are used. In this case,
 // REGMODE_H is not used.
-
+// find match registers
 SCTIMER CTRL 
 
 SCTIMER0->CTRL |= (1 << 4);
