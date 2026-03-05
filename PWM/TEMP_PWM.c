@@ -19,8 +19,8 @@ void pwm_init(void)
     SCT0->CTRL &= ~(1 << 2);
 
     /* MATCH registers */
-    SCT0->MATCHREL[0].U = PWM_PERIOD;   // Period
-    SCT0->MATCHREL[1].U = PWM_DUTY;     // Duty cycle
+    SCT0->MATCHREL[0].U = PWM_PERIOD;   // Period      | MATCHREL0 TABLE409
+    SCT0->MATCHREL[1].U = PWM_DUTY;     // Duty cycle  |
 
     /* Event 0 -> period reset */
     SCT0->EV[0].STATE = 0xFFFFFFFF;
