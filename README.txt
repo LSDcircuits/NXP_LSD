@@ -1,5 +1,4 @@
 NXP_LSD
-This repository is dedicated to using the LPC84X series,
 Functions for Hardware peripherals (i/o)
 
 Functions:
