@@ -58,10 +58,10 @@ SCTIMER CTRL
 SCTIMER0->CTRL |= (1 << 4);
 
 void pwm_init(void){
-    SYSCON->SYSAHBCLKCRTL0 |= (1 << 8); // clock enable SCT
-    SYSCON->PRESETCTRL0 &= ~(1 << 8); // Reset values 
-    SCTIMER0->CTRL &= ~(1 << 4); 
-    SCTIMER0->CONFIG |=  (1 << 0);
+     SYSCON->SYSAHBCLKCTRL0 |= (1 << 8);   // Enable clock for SCT  (Table: SYSAHBCLKCTRL0 register – Table 95 )
+     SYSCON->PRESETCTRL0 &= ~(1 << 8);     // SCT reset control     (Table: PRESETCTRL0 register    – Table 89 )
+     SCTIMER0->CTRL &= ~(1 << 4);          // Clear HALT_L bit      (Table: SCT CTRL register       – Table 523)
+     SCTIMER0->CONFIG |= (1 << 0);         // Set unified counter   (Table: SCT CONFIG register     – Table 522)
 }
 
 void pwm_out(){
