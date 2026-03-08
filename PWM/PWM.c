@@ -47,7 +47,7 @@
 // | **IOEN**     | Enable input trigger                           |
 // | **MATCHMEM** | Enable match trigger                           |
 
-
+// per every register inthe code describe and referecne. 
 void pwm_setDuty(uint32_t duty)
 {
     SCT0->MATCHREL[1].U = duty;
