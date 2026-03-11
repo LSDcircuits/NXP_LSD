@@ -2,7 +2,7 @@
 
 #define PWM_PERIOD 1000
 #define PWM_DUTY   500
-
+// fml it will be gfreat t be backt9 tgh
 void pwm_init(void)
 {
     // enable
