@@ -24,3 +24,16 @@ void clear_timer(){
     CTIMER0->TCR &= ~(1 << 0);
     CTIMER0->TCR |= (1 << 1); 
 }
+
+// for tomorrow to check if the timer is working 
+int main(){
+    Ctimer_init();
+    Ctimer_start();
+    while(1){
+        uint32t val0 = read_timer();
+        // make something happen like count up
+        uint32t val1 = read_timer();
+        Ctimer_stop();
+        clear_timer(); 
+        }
+}
