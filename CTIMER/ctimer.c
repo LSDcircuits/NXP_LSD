@@ -31,6 +31,7 @@ int main(){
     Ctimer_start();
     while(1){
         uint32t val0 = read_timer();
+        for (volatile int i = 0; i < 100000; i++);
         // make something happen like count up
         uint32t val1 = read_timer();
         Ctimer_stop();
