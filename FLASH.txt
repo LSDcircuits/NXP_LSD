@@ -16,14 +16,14 @@ openocd -f interface/cmsis-dap.cfg -f target/lpc84x.cfg \
 ls /dev/tty.*
 
 // CMIS 
-openocd \
--f interface/cmsis-dap.cfg \
--f target/lpc8x.cfg \
+openocd 
+-f interface/cmsis-dap.cfg 
+-f target/lpc8x.cfg 
 -c "program lpc845_project verify reset exit"
 
 // JLINk
-openocd \
--f interface/jlink.cfg \
--f target/lpc8x.cfg \
+openocd 
+-f interface/jlink.cfg 
+-f target/lpc8x.cfg 
 -c "program lpc845_project verify reset exit"
 
