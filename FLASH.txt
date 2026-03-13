@@ -27,8 +27,3 @@ openocd \
 -f target/lpc8x.cfg \
 -c "program lpc845_project verify reset exit"
 
-
-openocd \
--f interface/cmsis-dap.cfg \
--f target/lpc8x.cfg \
--c "program lpc845_project verify reset exit"
