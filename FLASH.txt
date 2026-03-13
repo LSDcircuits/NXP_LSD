@@ -4,10 +4,10 @@ Architecture overview:
 UNIX MACHINE - > OPENOCD - > DEBUG PROBE (CMSIS-DAP/ MCU-LIK) → LPC SWD INTERFACE - > FLASH MEMORY / DEBUG
 
  Config File Chain:
-| File	                  | Purpose
+| File	                   | Purpose
 | interface/cmsis-dap.cfg	| Configures the debug probe (MCU-Link on your BRK board)
 | target/lpc84x.cfg	      | Configures the LPC845 target chip (flash driver, memory map)
-| Your custom commands	  | Programming, verification, reset                      
+| Your custom commands	   | Programming, verification, reset                      
 
 Lpc84.cfg (target file) (OPENOCD 0.10.0+) defines:
 
