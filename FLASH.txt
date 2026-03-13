@@ -1,28 +1,29 @@
-file used to flash the controller or commands to flahs the controller. 
+Flashing & Debugging NXP MCU (LPC 84X series)
 
-// chekc for openOCD
-arm-none-eabi-gcc --version
-openocd --version
+Architecture overview:
+UNIX MACHINE - > OPENOCD - > DEBUG PROBE (CMSIS-DAP/ MCU-LIK) → LPC SWD INTERFACE - > FLASH MEMORY / DEBUG
 
-// check usb
-system_profiler SPUSBDataType
+ Config File Chain:
+| File	                  | Purpose
+| interface/cmsis-dap.cfg	| Configures the debug probe (MCU-Link on your BRK board)
+| target/lpc84x.cfg	      | Configures the LPC845 target chip (flash driver, memory map)
+| Your custom commands	  | Programming, verification, reset                      
 
-// check serial devices
-ls /dev/tty.*
+Lpc84.cfg (target file) (OPENOCD 0.10.0+) defines:
 
-//current working
-openocd -f interface/cmsis-dap.cfg -f target/lpc84x.cfg \
-  -c "program build/lpc845_project.bin 0x0 verify reset exit"
+-  Flash driver: LCP (internal flash algirithm)
+-  Flash bank: Base address 0x00000000
+-  IAP entry point: 0x0F001FF1 (LPC845)
+-  Work area: internal flash
 
-// CMIS FLASH
+CMSIS-DAP
 openocd 
 -f interface/cmsis-dap.cfg 
 -f target/lpc8x.cfg 
 -c "program lpc845_project verify reset exit"
 
-// JLINk FLASH
+JLINK
 openocd 
 -f interface/jlink.cfg 
 -f target/lpc8x.cfg 
 -c "program lpc845_project verify reset exit"
-
