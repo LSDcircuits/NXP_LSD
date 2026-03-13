@@ -7,21 +7,20 @@ openocd --version
 // check usb
 system_profiler SPUSBDataType
 
-// shoudl work with this to be automted with pyside
-openocd -f interface/cmsis-dap.cfg -f target/lpc84x.cfg \
-  -c "program lpc845_project verify reset exit"
-
-
 // check serial devices
 ls /dev/tty.*
 
-// CMIS 
+//current working
+openocd -f interface/cmsis-dap.cfg -f target/lpc84x.cfg \
+  -c "program build/lpc845_project.bin 0x0 verify reset exit"
+
+// CMIS FLASH
 openocd 
 -f interface/cmsis-dap.cfg 
 -f target/lpc8x.cfg 
 -c "program lpc845_project verify reset exit"
 
-// JLINk
+// JLINk FLASH
 openocd 
 -f interface/jlink.cfg 
 -f target/lpc8x.cfg 
