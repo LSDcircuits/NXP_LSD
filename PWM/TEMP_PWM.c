@@ -3,24 +3,16 @@
 #define PWM_PERIOD 1000
 #define PWM_DUTY   500
 // fml it will be gfreat t be backt9 tgh
-void pwm_init(void)
-{
-    // enable
-    SYSCON->SYSAHBCLKCTRL0 |= (1 << 8);
+void pwm_init(uint8_t duty) {
+    SYSCON->SYSAHBCLKCTRL0 |= (1 << 8); // clock enable
+    SYSCON->PRESETCTRL0 &= ~(1 << 8); // disable
+    SYSCON->PRESETCTRL0 |=  (1 << 8); // enable
+    
+    SCT0->CONFIG = (1 << 0); // countr 32 bit
+    SCT0->CTRL &= ~(1 << 2); // use system clcok
 
-    // reset
-    SYSCON->PRESETCTRL0 &= ~(1 << 8);
-    SYSCON->PRESETCTRL0 |=  (1 << 8);
-
-    // countr 32 bit
-    SCT0->CONFIG = (1 << 0);
-
-    // use system clcok 
-    SCT0->CTRL &= ~(1 << 2);
-
-    //match regs
     SCT0->MATCHREL[0].U = PWM_PERIOD;   // Period      | MATCHREL0 TABLE409
-    SCT0->MATCHREL[1].U = PWM_DUTY;     // Duty cycle  |
+    SCT0->MATCHREL[1].U = PWM_DUTY;     // Duty cycle  | 
 
     // EVENT 0
     SCT0->EV[0].STATE = 0xFFFFFFFF;
@@ -38,4 +30,8 @@ void pwm_init(void)
 
     // Start counter
     SCT0->CTRL &= ~(1 << 2);
+}
+
+void PWM_setup(uint32_t period){
+    
 }
