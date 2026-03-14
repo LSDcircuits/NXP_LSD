@@ -1,4 +1,6 @@
-void Ctimer_init(void) {
+#include "LPC845.h"
+
+Ctimer_init(void) {
     SYSCON->SYSAHBCLKCTRL0 |= (1 << 25); // (Table 95 – SYSAHBCLKCTRL0 register)
     SYSCON->PRESETCTRL0 &= ~(1 << 25);   // (Table 89 – PRESETCTRL0 register)
     SYSCON->PRESETCTRL0 |=  (1 << 25);   
@@ -30,10 +32,11 @@ int main(){
     Ctimer_init();
     Ctimer_start();
     while(1){
-        uint32t val0 = read_timer();
+        uint32_t val0 = read_timer();
         for (volatile int i = 0; i < 100000; i++);
         // make something happen like count up
-        uint32t val1 = read_timer();
+        uint32_t val1 = read_timer();
+        uint32_t val = val1 - val2;
         Ctimer_stop();
         clear_timer(); 
         }
