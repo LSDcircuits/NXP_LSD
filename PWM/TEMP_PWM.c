@@ -46,6 +46,7 @@ void pwm_init(void) {
     SCT0->CTRL &= ~(1 << 2);
 }
 
+// i should complete this by the end of the day, kindof.
 void pwm_set_duty(uint32_t duty) {
     if (duty > PWM_PERIOD) duty = PWM_PERIOD;
     SCT0->MATCHREL[1] = duty;
