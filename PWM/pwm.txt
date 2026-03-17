@@ -17,3 +17,32 @@ Pin:        HIGH───────────────LOW─────�
             │                              │                    │
          Start HIGH                    Goes LOW             Goes HIGH
          (at count 0)                  (at count 500)         (at count 999)
+
+
+_______________________________________________________________________
+Counter:    0        250        500        750        999→0           |
+            │          │          │          │          │             |
+            ▼          ▼          ▼          ▼          ▼             |
+                                                                      |
+            ┌────────────────────┐                     ┌──────────    |
+            │      HIGH          │        LOW          │    HIGH      |
+            │    (50% duty)      │      (50%)          │   (next)     |
+            └────────────────────┘                     └──────────    |
+            ▲                    ▲                     ▲              |
+            │                    │                     │              |
+         Start/init          EV[1] fires            EV[0] fires       |
+         (already HIGH      MATCHREL[1]=500         MATCHREL[0]=999   |
+          from last                                 RESET + SET       |
+          cycle)                                    for next cycle    |
+
+
+
+
+MATCHREL[0] = 999 ──► EV[0] fires ──► SET bit 0 ──► OUT[0] = HIGH
+                                            ↑
+                                            └── Happens at END of period
+                                                (also triggers counter reset via AUTOLIMIT)
+
+MATCHREL[1] = 500 ──► EV[1] fires ──► CLR bit 1 ──► OUT[0] = LOW
+                                            ↑
+                                            └── Happens at MID point (duty cycle end)
