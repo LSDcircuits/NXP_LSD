@@ -31,7 +31,7 @@ void pwm_init(void) {
     
     // Event 1: Match 1 → CLEAR output (end of duty)
     SCT0->EV[1].STATE = 0xFFFFFFFF;
-    SCT0->EV[1].CTRL  = (1 << 0) | ( 1 << 12;  // Match 1 with timer condition only
+    SCT0->EV[1].CTRL  = (1 << 0) | (1 << 12) ;  // Match 1 with timer condition only
     
     // Output 0: SET on EV0, CLEAR on EV1
     SCT0->OUT[0].SET = (1 << 0); // when event 0 happens set  
