@@ -1,4 +1,3 @@
-
 PWM OUT
 
 The PWM is slightly more complex than the previous peripherals, it uses a free running timer and can count up or down, theres also registers which store a value that when matching with counter value a event can happen, this event can be linked something like a software interrupt to start a loop or the switching matrix for setting a output on the pins. 
