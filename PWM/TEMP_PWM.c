@@ -2,7 +2,7 @@
 
 #define PWM_PERIOD  100000
 #define PWM_DUTY    50000
-#define PWM_PIN     15  // PIO0_10
+#define PWM_PIN     15  // PIO0_15
 
 void pwm_init(void) {
     // Enable clocks for SCT, SWM, AND GPIO
