@@ -1,3 +1,6 @@
+// to bne implemented into the pwm file 
+
+
 // Event 0: Capture on rising edge, then toggle between states
 SCT0->EV[0].CTRL = (0 << 0)       // CAP0
                  | (1 << 4)       // SCT_PIN0
