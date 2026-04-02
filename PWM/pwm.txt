@@ -1,6 +1,8 @@
 PWM OUT
 
-The PWM is slightly more complex than the previous peripherals, it uses a free running timer and can count up or down, theres also registers which store a value that when matching with counter value a event can happen, this event can be linked something like a software interrupt to start a loop or the switching matrix for setting a output on the pins. 
+The PWM is slightly more complex than the previous peripherals, it uses a free running timer and can count up or down, theres also registers which store a value 
+that when matching with counter value a event can happen, this event can be linked something like a software interrupt to start a loop or the switching matrix for 
+setting a output on the pins. 
 
 Theres 8 relevant registers for PWM timing:
 
@@ -10,7 +12,13 @@ SCT0→EV[n].CTRL   | Sets trigger mode & Match reg
 SCT0→OUT[n].SET   | Select which event sets
 SCT0→OUT[n].CLR   | Select which event clears
 
-A more detailed manner of describing this is  looking at the events and how they effect the output, firstly the events In this case are set by the match registers, theres a total of 7 match registers and 7 event registers, Match registers match the value assigned to counter for a event to happen. For the case of a single PWM output, 2 match registers are used match[0] = 999 & match[1] = 500, so when the counter start counting everything is set as off then the counter counts up to 500 matches with match 1 for event [1] to happen then continues counting to 999 and Matching with match[0] for event[0] to happen, since (SCT0→EV[0].STATE = ( 1 << 0 ) | (12 << 1)) once event 0 happens then the timer is cleared to 0 and the loop starts over but with the initial pin state being high after the first iteration then goes low after event 1 happens and high. Its important to notice the PWM is free running after the first loop, loop 1 is completely low and triggers high at the end and after that it will always go high clear the timer and start counting as high.
+A more detailed manner of describing this is  looking at the events and how they effect the output, firstly the events In this case are set by the match registers, 
+theres a total of 7 match registers and 7 event registers, Match registers match the value assigned to counter for a event to happen. For the case of a single PWM output, 
+2 match registers are used match[0] = 999 & match[1] = 500, so when the counter start counting everything is set as off then the counter counts up to 500 matches with match 1 
+for event [1] to happen then continues counting to 999 and Matching with match[0] for event[0] to happen, since (SCT0→EV[0].STATE = ( 1 << 0 ) | (12 << 1)) once event 0 happens 
+then the timer is cleared to 0 and the loop starts over but with the initial pin state being high after the first iteration then goes low after event 1 happens and high. Its 
+important to notice the PWM is free running after the first loop, loop 1 is completely low and triggers high at the end and after that it will always go high clear the timer 
+and start counting as high.
 
 
             
