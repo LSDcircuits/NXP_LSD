@@ -18,7 +18,5 @@ void clock_init_fro_30mhz(void) {
     
     // Update CMSIS variable
     SystemCoreClock = 30000000;
-} can you exlain this code and reference every table used in the manual for this code.
-
-
+} 
 
