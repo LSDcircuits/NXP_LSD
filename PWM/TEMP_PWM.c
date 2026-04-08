@@ -4,48 +4,69 @@
 #define PWM_DUTY    50000
 #define PWM_PIN     15  // PIO0_15
 
-void pwm_init(void) {
-    // Enable clocks for SCT, SWM, AND GPIO
-    SYSCON->SYSAHBCLKCTRL0 |= (1 << 8)   // SCT clock
-                           |  (1 << 7)   // SWM clock
-                           |  (1 << 6);  // GPIO clock ← ADD THIS!
-    // Reset SCT
+#include "LPC845.h"
+
+// 6 PWM outputs using only 7 events (1 shared period + 6 duty events)
+void pwm_init_6ch(void) {
+    // Enable clocks
+    SYSCON->SYSAHBCLKCTRL0 |= (1 << 8) | (1 << 7) | (1 << 6);
     SYSCON->PRESETCTRL0 &= ~(1 << 8);
     SYSCON->PRESETCTRL0 |=  (1 << 8);
     
-    // Configure pin as OUTPUT before routing
-    GPIO->DIR[0] |= (1 << PWM_PIN);  // Set PIO0_10 as output ← ADD THIS!
+    // Set 6 pins as outputs (example: PIO0_15, 16, 17, 18, 19, 20)
+    GPIO->DIR[0] |= (0x1F << 15);  // Pins 15-20
     
-    // Configure SCT: unified 32-bit counter, auto-limit
-    SCT0->CONFIG = (1 << 0)      // UNIFY = 1 (32-bit counter)
-                 | (1 << 17);    // AUTOLIMIT_L (reset at MATCH0)
-
-    SCT0->MATCHREL[0] = PWM_PERIOD - 1;  // Period
-    SCT0->MATCHREL[1] = PWM_DUTY;        // Duty cycle
+    // Unified 32-bit, auto-limit on MATCH0
+    SCT0->CONFIG = (1 << 0) | (1 << 17);
     
-    // Stop and clear counter
-    SCT0->CTRL = (1 << 2) | (1 << 3);  // HALT | CLRCTR (write both at once)
+    // Shared period for all PWMs
+    SCT0->MATCHREL[0] = PWM_PERIOD - 1;  // MATCH0 = period
     
-    // Event 0: Match 0 → SET output
+    // Individual duty cycles (can be updated independently)
+    SCT0->MATCHREL[1] = duty1;  // PWM1 duty
+    SCT0->MATCHREL[2] = duty2;  // PWM2 duty  
+    SCT0->MATCHREL[3] = duty3;  // PWM3 duty
+    SCT0->MATCHREL[4] = duty4;  // PWM4 duty
+    SCT0->MATCHREL[5] = duty5;  // PWM5 duty
+    SCT0->MATCHREL[6] = duty6;  // PWM6 duty
+    
+    SCT0->CTRL = (1 << 2) | (1 << 3);  // Halt & clear
+    
+    // Event 0 (Period): MATCH0 → SET all outputs high, reset counter
     SCT0->EV[0].STATE = 0xFFFFFFFF;
-    SCT0->EV[0].CTRL  = (0 << 0) | (1 << 12); 
+    SCT0->EV[0].CTRL  = (0 << 0) | (1 << 12);  // Match 0 only
     
-    // Event 1: Match 1 → CLEAR output
-    SCT0->EV[1].STATE = 0xFFFFFFFF; 
-    SCT0->EV[1].CTRL  = (1 << 0) | (1 << 12);
-
-    // Output 0: SET on EV0, CLEAR on EV1
-    SCT0->OUT[0].SET = (1 << 0);
-    SCT0->OUT[0].CLR = (1 << 1);
+    // Events 1-6: Individual duty matches → CLEAR respective output
+    SCT0->EV[1].STATE = 0xFFFFFFFF;
+    SCT0->EV[1].CTRL  = (1 << 0) | (1 << 12);  // Match 1
     
-    // Route SCT_OUT0 to pin PIO0_10
-    SWM0->PINASSIGN.PINASSIGN7 = (SWM0->PINASSIGN.PINASSIGN7 & 0x00FFFFFF) | (PWM_PIN << 24);
+    SCT0->EV[2].STATE = 0xFFFFFFFF;
+    SCT0->EV[2].CTRL  = (2 << 0) | (1 << 12);  // Match 2
     
-    // Disable digital filter on pin (optional but recommended)
-    // IOCON->PIO0_10 &= ~(0x3 << 3);  // Clear MODE bits if needed
+    SCT0->EV[3].STATE = 0xFFFFFFFF;
+    SCT0->EV[3].CTRL  = (3 << 0) | (1 << 12);  // Match 3
     
-    // Start counter
-    SCT0->CTRL = 0;  // Clear HALT and CLRCTR
+    SCT0->EV[4].STATE = 0xFFFFFFFF;
+    SCT0->EV[4].CTRL  = (4 << 0) | (1 << 12);  // Match 4
+    
+    SCT0->EV[5].STATE = 0xFFFFFFFF;
+    SCT0->EV[5].CTRL  = (5 << 0) | (1 << 12);  // Match 5
+    
+    SCT0->EV[6].STATE = 0xFFFFFFFF;
+    SCT0->EV[6].CTRL  = (6 << 0) | (1 << 12);  // Match 6
+    
+    // Configure outputs: All SET on EV0 (period), each CLEAR on respective EV
+    SCT0->OUT[0].SET = (1 << 0);  SCT0->OUT[0].CLR = (1 << 1);  // EV1 clears OUT0
+    SCT0->OUT[1].SET = (1 << 0);  SCT0->OUT[1].CLR = (1 << 2);  // EV2 clears OUT1
+    SCT0->OUT[2].SET = (1 << 0);  SCT0->OUT[2].CLR = (1 << 3);  // EV3 clears OUT2
+    SCT0->OUT[3].SET = (1 << 0);  SCT0->OUT[3].CLR = (1 << 4);  // EV4 clears OUT3
+    SCT0->OUT[4].SET = (1 << 0);  SCT0->OUT[4].CLR = (1 << 5);  // EV5 clears OUT4
+    SCT0->OUT[5].SET = (1 << 0);  SCT0->OUT[5].CLR = (1 << 6);  // EV6 clears OUT5
+    
+    // Route outputs via SWM (SCT_OUT0-5 to pins of your choice)
+    // See PINASSIGN7, PINASSIGN8, PINASSIGN9 registers
+    
+    SCT0->CTRL = 0;  // Start
 }
 
 
