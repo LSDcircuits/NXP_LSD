@@ -24,7 +24,7 @@ typedef struct {
     uint32_t duty4;
     uint32_t duty5;
     uint32_t duty6;
-    uint32_t Period;
+    uint32_t period;
 } pwm_var;
 
 void pwm_init(pwm_var *pwm_var) {
@@ -48,7 +48,7 @@ void pwm_init(pwm_var *pwm_var) {
     SCT0->CONFIG = (1 << 0)      // UNIFY = 1 (32-bit counter)
                  | (1 << 17);    // AUTOLIMIT_L (reset at MATCH0)
 
-    SCT0->MATCHREL[0] = PWM_PERIOD - 1;  // Period
+    SCT0->MATCHREL[0] = pwm_var->period - 1;  // Period
 
     SCT0->MATCHREL[1] = pwm_var->duty1;  // Duty cycle
     SCT0->MATCHREL[2] = pwm_var->duty2;
@@ -104,4 +104,41 @@ void pwm_init(pwm_var *pwm_var) {
     // IOCON->PIO0_10 &= ~(0x3 << 3);  // Clear MODE bits if needed
     // Start counter
     SCT0->CTRL = 0;  // Clear HALT and CLRCTR
+}
+
+void set_pwm_freq(pwm_var *pwm_var, uint32_t freq) {
+    pwm_var->period = 12000000/(freq);
+    SCT0->MATCHREL[0] = pwm_var->period - 1;
+}
+
+void set_pwm_duty(pwm_var *pwm_var, uint32_t pwm_duty[6]){
+    pwm_var->duty1 = (pwm_var->period/100) * pwm_duty[0];
+    pwm_var->duty2 = (pwm_var->period/100) * pwm_duty[1];
+    pwm_var->duty3 = (pwm_var->period/100) * pwm_duty[2];
+    pwm_var->duty4 = (pwm_var->period/100) * pwm_duty[3];
+    pwm_var->duty3 = (pwm_var->period/100) * pwm_duty[4];
+    pwm_var->duty4 = (pwm_var->period/100) * pwm_duty[5];
+
+    SCT0->MATCHREL[1] = pwm_var->duty1;  // Duty cycle
+    SCT0->MATCHREL[2] = pwm_var->duty2;
+    SCT0->MATCHREL[3] = pwm_var->duty3;
+    SCT0->MATCHREL[4] = pwm_var->duty4;
+    SCT0->MATCHREL[5] = pwm_var->duty5;
+    SCT0->MATCHREL[6] = pwm_var->duty6;
+}
+
+void disable_pwm(void) { 
+    SCT0->CTRL |= (1 << 2);    // HALT
+    SCT0->CTRL |= (1 << 3);    // CLRCTR
+}
+
+void enable_pwm_1(void) {
+    SCT0->CTRL &= ~(1 << 2);
+}
+
+int main(void) {
+        while (1) {
+        // PWM running in hardware
+    }
+
 }
