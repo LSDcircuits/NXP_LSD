@@ -9,6 +9,8 @@
 
 // use uint32t since LPC845 has no FPU
 // Ill need to adjust this for other LPC series which have FPU :)
+// another notice is pin1-6 are pwm pins which can be mapped
+// In such manner that pin1 can be PIO5 if 5 is assinged to pin1
 typedef struct {
     uint32_t pin1;
     uint32_t pin2;
@@ -29,7 +31,7 @@ void pwm_init(pwm_var *pwm_var) {
     // Enable clocks for SCT, SWM, AND GPIO
     SYSCON->SYSAHBCLKCTRL0 |= (1 << 8)   // SCT clock
                            |  (1 << 7)   // SWM clock
-                           |  (1 << 6);  // GPIO clock
+                           |  (1 << 6);  // GPIO clock ← ADD THIS!
     // Reset SCT
     SYSCON->PRESETCTRL0 &= ~(1 << 8);
     SYSCON->PRESETCTRL0 |=  (1 << 8);
@@ -87,16 +89,16 @@ void pwm_init(pwm_var *pwm_var) {
     // Output 1: SET on EV0, CLEAR on EV1
     SCT0->OUT[1].SET = (1 << 0); SCT0->OUT[0].CLR = (1 << 1); // skip out 0 for coherence
     
-    // Route SCT_OUT0 to pin PIO0_10
+    // Route SCT_OUT0 to pin
     SWM0->PINASSIGN.PINASSIGN7 = (SWM0->PINASSIGN.PINASSIGN7 & 0x00FFFFFF) 
-                                | (PWM_PIN << 24);
+                                | (pwm_var->pin1 << 24); // SCT0
     SWM0->PINASSIGN.PINASSIGN8 = (SWM0->PINASSIGN.PINASSIGN8 & 0x00000000) 
-                                | (PWM_PIN << 24)
-                                | (PWM_PIN << 24)
-                                | (PWM_PIN << 24)
-                                | (PWM_PIN << 24);
+                                | (pwm_var->pin2 << 0)   // SCT1 
+                                | (pwm_var->pin3 << 8)   // SCT2
+                                | (pwm_var->pin4 << 16)  // SCT3
+                                | (pwm_var->pin5 << 24); // SCT4 
     SWM0->PINASSIGN.PINASSIGN9 = (SWM0->PINASSIGN.PINASSIGN9 & 0xFFFFFF00) 
-                                | (PWM_PIN << 24);
+                                | (pwm_var->pin6 << 24);
 
     // Disable digital filter on pin (optional but recommended)
     // IOCON->PIO0_10 &= ~(0x3 << 3);  // Clear MODE bits if needed
