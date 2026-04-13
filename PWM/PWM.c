@@ -50,12 +50,12 @@ void pwm_init(pwm_var *pwm_var) {
 
     SCT0->MATCHREL[0] = pwm_var->period - 1;  // Period
 
-    SCT0->MATCHREL[1] = pwm_var->duty1;  // Duty cycle
-    SCT0->MATCHREL[2] = pwm_var->duty2;
-    SCT0->MATCHREL[3] = pwm_var->duty3;
-    SCT0->MATCHREL[4] = pwm_var->duty4;
-    SCT0->MATCHREL[5] = pwm_var->duty5;
-    SCT0->MATCHREL[6] = pwm_var->duty6;
+    GPIO->DIR[0] |= (1 << pwm_var->pin1);  //   // fix, port & Pin arent the same
+    GPIO->DIR[0] |= (1 << pwm_var->pin2);  // 
+    GPIO->DIR[0] |= (1 << pwm_var->pin3);  // 
+    GPIO->DIR[0] |= (1 << pwm_var->pin4);  // 
+    GPIO->DIR[0] |= (1 << pwm_var->pin5);  // 
+    GPIO->DIR[0] |= (1 << pwm_var->pin6);  // 
 
     // Stop and clar counter
     SCT0->CTRL = (1 << 2) | (1 << 3);  // HALT | CLRCTR (write both at once)
