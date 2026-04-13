@@ -50,7 +50,7 @@ void pwm_init(pwm_var *pwm_var) {
 
     SCT0->MATCHREL[0] = pwm_var->period - 1;  // Period
 
-    GPIO->DIR[0] |= (1 << pwm_var->pin1);  //   // fix, port & Pin arent the same
+    GPIO->DIR[0] |= (1 << pwm_var->pin1);  //   
     GPIO->DIR[0] |= (1 << pwm_var->pin2);  // 
     GPIO->DIR[0] |= (1 << pwm_var->pin3);  // 
     GPIO->DIR[0] |= (1 << pwm_var->pin4);  // 
