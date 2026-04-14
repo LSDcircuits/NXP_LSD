@@ -1,5 +1,6 @@
 #include "LPC845.h"
 
+#define CLK_freq 12000000
 #define PWM_freq 50
 #define Duty_cycle
 
@@ -37,12 +38,12 @@ void pwm_init(pwm_var *pwm_var) {
     SYSCON->PRESETCTRL0 |=  (1 << 8);
     
     // Configure pin as OUTPUT before routing
-    GPIO->DIR[1] |= (1 << pwm_var->pin1);  // 
-    GPIO->DIR[2] |= (1 << pwm_var->pin2);  // 
-    GPIO->DIR[3] |= (1 << pwm_var->pin3);  // 
-    GPIO->DIR[4] |= (1 << pwm_var->pin4);  // 
-    GPIO->DIR[5] |= (1 << pwm_var->pin5);  // 
-    GPIO->DIR[6] |= (1 << pwm_var->pin6);  // 
+    GPIO->DIR[0] |= (1 << pwm_var->pin1);  //   
+    GPIO->DIR[0] |= (1 << pwm_var->pin2);  // 
+    GPIO->DIR[0] |= (1 << pwm_var->pin3);  // 
+    GPIO->DIR[0] |= (1 << pwm_var->pin4);  // 
+    GPIO->DIR[0] |= (1 << pwm_var->pin5);  // 
+    GPIO->DIR[0] |= (1 << pwm_var->pin6);  // 
  
     // Configure SCT: unified 32-bit counter, auto-limit
     SCT0->CONFIG = (1 << 0)      // UNIFY = 1 (32-bit counter)
@@ -50,12 +51,12 @@ void pwm_init(pwm_var *pwm_var) {
 
     SCT0->MATCHREL[0] = pwm_var->period - 1;  // Period
 
-    GPIO->DIR[0] |= (1 << pwm_var->pin1);  //   
-    GPIO->DIR[0] |= (1 << pwm_var->pin2);  // 
-    GPIO->DIR[0] |= (1 << pwm_var->pin3);  // 
-    GPIO->DIR[0] |= (1 << pwm_var->pin4);  // 
-    GPIO->DIR[0] |= (1 << pwm_var->pin5);  // 
-    GPIO->DIR[0] |= (1 << pwm_var->pin6);  // 
+    SCT0->MATCHREL[1] = pwm_var->duty1;  // Duty cycle
+    SCT0->MATCHREL[2] = pwm_var->duty2;
+    SCT0->MATCHREL[3] = pwm_var->duty3;
+    SCT0->MATCHREL[4] = pwm_var->duty4;
+    SCT0->MATCHREL[5] = pwm_var->duty5;
+    SCT0->MATCHREL[6] = pwm_var->duty6;
 
     // Stop and clar counter
     SCT0->CTRL = (1 << 2) | (1 << 3);  // HALT | CLRCTR (write both at once)
@@ -64,7 +65,6 @@ void pwm_init(pwm_var *pwm_var) {
     SCT0->EV[0].STATE = 0xFFFFFFFF;
     SCT0->EV[0].CTRL  = (0 << 0) | (1 << 12); 
     
-
     // set events for duty / for my self to correct
     // Event 1: Match 1 → CLEAR output for EV[CTRL] bit 0:3
     // (Reminder) 0. 0000 / 1. 0001 / 2. 0010 / 3. 0011 n.. (n << 0) = 0x0, 0x1, 0x2 .. 
@@ -86,8 +86,25 @@ void pwm_init(pwm_var *pwm_var) {
     SCT0->EV[6].STATE = 0xFFFFFFFF; 
     SCT0->EV[6].CTRL  = (6 << 0) | (1 << 12);
 
-    // Output 1: SET on EV0, CLEAR on EV1
-    SCT0->OUT[1].SET = (1 << 0); SCT0->OUT[0].CLR = (1 << 1); // skip out 0 for coherence
+
+    // Output 1: SET on EV0, CLEAR on EV1, to be done to the other 6 
+    SCT0->OUT[0].SET = (1 << 0); 
+    SCT0->OUT[0].CLR = (1 << 1); // skip out 0 for coherence
+
+    SCT0->OUT[0].SET = (1 << 0); 
+    SCT0->OUT[1].CLR = (1 << 2); 
+
+    SCT0->OUT[0].SET = (1 << 0); 
+    SCT0->OUT[2].CLR = (1 << 3); 
+
+    SCT0->OUT[0].SET = (1 << 0); 
+    SCT0->OUT[3].CLR = (1 << 4); 
+
+    SCT0->OUT[0].SET = (1 << 0); 
+    SCT0->OUT[4].CLR = (1 << 5); 
+
+    SCT0->OUT[0].SET = (1 << 0); 
+    SCT0->OUT[5].CLR = (1 << 6); 
     
     // Route SCT_OUT0 to pin
     SWM0->PINASSIGN.PINASSIGN7 = (SWM0->PINASSIGN.PINASSIGN7 & 0x00FFFFFF) 
@@ -98,7 +115,7 @@ void pwm_init(pwm_var *pwm_var) {
                                 | (pwm_var->pin4 << 16)  // SCT3
                                 | (pwm_var->pin5 << 24); // SCT4 
     SWM0->PINASSIGN.PINASSIGN9 = (SWM0->PINASSIGN.PINASSIGN9 & 0xFFFFFF00) 
-                                | (pwm_var->pin6 << 0);
+                                | (pwm_var->pin6 << 0); // SCT5
 
     // Disable digital filter on pin (optional but recommended)
     // IOCON->PIO0_10 &= ~(0x3 << 3);  // Clear MODE bits if needed
@@ -107,17 +124,17 @@ void pwm_init(pwm_var *pwm_var) {
 }
 
 void set_pwm_freq(pwm_var *pwm_var, uint32_t freq) {
-    pwm_var->period = 12000000/(freq);
+    pwm_var->period = CLK_freq/(freq);
     SCT0->MATCHREL[0] = pwm_var->period - 1;
 }
 
 void set_pwm_duty(pwm_var *pwm_var, uint32_t pwm_duty[6]){
-    pwm_var->duty1 = (pwm_var->period * pwm_duty[0])/100;
-    pwm_var->duty2 = (pwm_var->period * pwm_duty[1])/100;
-    pwm_var->duty3 = (pwm_var->period * pwm_duty[2])/100;
-    pwm_var->duty4 = (pwm_var->period * pwm_duty[3])/100;
-    pwm_var->duty5 = (pwm_var->period * pwm_duty[4])/100;
-    pwm_var->duty6 = (pwm_var->period * pwm_duty[5])/100;
+    pwm_var->duty1 = (pwm_var->period * pwm_duty[0]/100);
+    pwm_var->duty2 = (pwm_var->period * pwm_duty[1]/100);
+    pwm_var->duty3 = (pwm_var->period * pwm_duty[2]/100);
+    pwm_var->duty4 = (pwm_var->period * pwm_duty[3]/100);
+    pwm_var->duty5 = (pwm_var->period * pwm_duty[4]/100);
+    pwm_var->duty6 = (pwm_var->period * pwm_duty[5]/100);
 
     SCT0->MATCHREL[1] = pwm_var->duty1;  // Duty cycle
     SCT0->MATCHREL[2] = pwm_var->duty2;
