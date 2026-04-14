@@ -98,7 +98,7 @@ void pwm_init(pwm_var *pwm_var) {
                                 | (pwm_var->pin4 << 16)  // SCT3
                                 | (pwm_var->pin5 << 24); // SCT4 
     SWM0->PINASSIGN.PINASSIGN9 = (SWM0->PINASSIGN.PINASSIGN9 & 0xFFFFFF00) 
-                                | (pwm_var->pin6 << 24);
+                                | (pwm_var->pin6 << 0);
 
     // Disable digital filter on pin (optional but recommended)
     // IOCON->PIO0_10 &= ~(0x3 << 3);  // Clear MODE bits if needed
@@ -112,12 +112,12 @@ void set_pwm_freq(pwm_var *pwm_var, uint32_t freq) {
 }
 
 void set_pwm_duty(pwm_var *pwm_var, uint32_t pwm_duty[6]){
-    pwm_var->duty1 = (pwm_var->period/100) * pwm_duty[0];
-    pwm_var->duty2 = (pwm_var->period/100) * pwm_duty[1];
-    pwm_var->duty3 = (pwm_var->period/100) * pwm_duty[2];
-    pwm_var->duty4 = (pwm_var->period/100) * pwm_duty[3];
-    pwm_var->duty3 = (pwm_var->period/100) * pwm_duty[4];
-    pwm_var->duty4 = (pwm_var->period/100) * pwm_duty[5];
+    pwm_var->duty1 = (pwm_var->period * pwm_duty[0])/100;
+    pwm_var->duty2 = (pwm_var->period * pwm_duty[1])/100;
+    pwm_var->duty3 = (pwm_var->period * pwm_duty[2])/100;
+    pwm_var->duty4 = (pwm_var->period * pwm_duty[3])/100;
+    pwm_var->duty5 = (pwm_var->period * pwm_duty[4])/100;
+    pwm_var->duty6 = (pwm_var->period * pwm_duty[5])/100;
 
     SCT0->MATCHREL[1] = pwm_var->duty1;  // Duty cycle
     SCT0->MATCHREL[2] = pwm_var->duty2;
