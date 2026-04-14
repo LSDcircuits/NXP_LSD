@@ -91,19 +91,19 @@ void pwm_init(pwm_var *pwm_var) {
     SCT0->OUT[0].SET = (1 << 0); 
     SCT0->OUT[0].CLR = (1 << 1); // skip out 0 for coherence
 
-    SCT0->OUT[0].SET = (1 << 0); 
+    SCT0->OUT[1].SET = (1 << 0); 
     SCT0->OUT[1].CLR = (1 << 2); 
 
-    SCT0->OUT[0].SET = (1 << 0); 
+    SCT0->OUT[1].SET = (1 << 0); 
     SCT0->OUT[2].CLR = (1 << 3); 
 
-    SCT0->OUT[0].SET = (1 << 0); 
+    SCT0->OUT[1].SET = (1 << 0); 
     SCT0->OUT[3].CLR = (1 << 4); 
 
-    SCT0->OUT[0].SET = (1 << 0); 
+    SCT0->OUT[1].SET = (1 << 0); 
     SCT0->OUT[4].CLR = (1 << 5); 
 
-    SCT0->OUT[0].SET = (1 << 0); 
+    SCT0->OUT[1].SET = (1 << 0); 
     SCT0->OUT[5].CLR = (1 << 6); 
     
     // Route SCT_OUT0 to pin
