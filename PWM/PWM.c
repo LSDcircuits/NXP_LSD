@@ -68,8 +68,9 @@ void pwm_init(pwm_var *pwm_var) {
     // set events for duty / for my self to correct
     // Event 1: Match 1 → CLEAR output for EV[CTRL] bit 0:3
     // (Reminder) 0. 0000 / 1. 0001 / 2. 0010 / 3. 0011 n.. (n << 0) = 0x0, 0x1, 0x2 .. 
+    // Events can be linked as states for the counter.
     SCT0->EV[1].STATE = 0xFFFFFFFF; 
-    SCT0->EV[1].CTRL  = (1 << 0) | (1 << 12);
+    SCT0->EV[1].CTRL  = (1 << 0) | (1 << 12); 
 
     SCT0->EV[2].STATE = 0xFFFFFFFF; 
     SCT0->EV[2].CTRL  = (2 << 0) | (1 << 12);
@@ -88,23 +89,24 @@ void pwm_init(pwm_var *pwm_var) {
 
 
     // Output 1: SET on EV0, CLEAR on EV1, to be done to the other 6 
-    SCT0->OUT[0].SET = (1 << 0); 
-    SCT0->OUT[0].CLR = (1 << 1); // skip out 0 for coherence
+    // these are for outputs, since theres  6 ouputs for a singe timer 
+    SCT0->OUT[0].SET = (1 << 0); // set channel 1 high at match 0
+    SCT0->OUT[0].CLR = (1 << 1); // set channel 2 low at match 2
 
-    SCT0->OUT[1].SET = (1 << 0); 
-    SCT0->OUT[1].CLR = (1 << 2); 
+    SCT0->OUT[1].SET = (1 << 0); // set channel 2 high at match 0
+    SCT0->OUT[1].CLR = (1 << 2); // set channel 2 low at match 2
 
-    SCT0->OUT[1].SET = (1 << 0); 
-    SCT0->OUT[2].CLR = (1 << 3); 
+    SCT0->OUT[1].SET = (1 << 0); // set channel 3 high at match 0
+    SCT0->OUT[2].CLR = (1 << 3); // set channel 3 low at match 3
 
-    SCT0->OUT[1].SET = (1 << 0); 
-    SCT0->OUT[3].CLR = (1 << 4); 
+    SCT0->OUT[1].SET = (1 << 0); // set channel 4 high at match 0
+    SCT0->OUT[3].CLR = (1 << 4); // set channel 4 low at match 4
 
-    SCT0->OUT[1].SET = (1 << 0); 
-    SCT0->OUT[4].CLR = (1 << 5); 
+    SCT0->OUT[1].SET = (1 << 0); // set channel 5 high at match 0
+    SCT0->OUT[4].CLR = (1 << 5); // set channel 5 low at match 5
 
-    SCT0->OUT[1].SET = (1 << 0); 
-    SCT0->OUT[5].CLR = (1 << 6); 
+    SCT0->OUT[1].SET = (1 << 0); // set channel 6 high at match 0
+    SCT0->OUT[5].CLR = (1 << 6); // set channel 6 low at match 6
     
     // Route SCT_OUT0 to pin
     SWM0->PINASSIGN.PINASSIGN7 = (SWM0->PINASSIGN.PINASSIGN7 & 0x00FFFFFF) 
