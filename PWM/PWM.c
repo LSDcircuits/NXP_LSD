@@ -19,6 +19,7 @@ typedef struct {
     uint32_t pin4;
     uint32_t pin5;
     uint32_t pin6;
+
     uint32_t duty1;
     uint32_t duty2;
     uint32_t duty3;
@@ -38,6 +39,7 @@ void pwm_init(pwm_var *pwm_var) {
     SYSCON->PRESETCTRL0 |=  (1 << 8);
     
     // Configure pin as OUTPUT before routing
+    // DIR(0) = (1 << pin_number) DIR[0] -> GPIO 0 - 31
     GPIO->DIR[0] |= (1 << pwm_var->pin1);  //   
     GPIO->DIR[0] |= (1 << pwm_var->pin2);  // 
     GPIO->DIR[0] |= (1 << pwm_var->pin3);  // 
@@ -126,11 +128,13 @@ void pwm_init(pwm_var *pwm_var) {
 }
 
 void set_pwm_freq(pwm_var *pwm_var, uint32_t freq) {
+    // update the period based on timer freq & desired pwm freq
     pwm_var->period = CLK_freq/(freq);
-    SCT0->MATCHREL[0] = pwm_var->period - 1;
+    SCT0->MATCHREL[0] = pwm_var->period - 1; // load to MATCHREL
 }
 
 void set_pwm_duty(pwm_var *pwm_var, uint32_t pwm_duty[6]){
+    // update duty based on period 
     pwm_var->duty1 = (pwm_var->period * pwm_duty[0]/100);
     pwm_var->duty2 = (pwm_var->period * pwm_duty[1]/100);
     pwm_var->duty3 = (pwm_var->period * pwm_duty[2]/100);
@@ -138,6 +142,7 @@ void set_pwm_duty(pwm_var *pwm_var, uint32_t pwm_duty[6]){
     pwm_var->duty5 = (pwm_var->period * pwm_duty[4]/100);
     pwm_var->duty6 = (pwm_var->period * pwm_duty[5]/100);
 
+    // load to matchrel
     SCT0->MATCHREL[1] = pwm_var->duty1;  // Duty cycle
     SCT0->MATCHREL[2] = pwm_var->duty2;
     SCT0->MATCHREL[3] = pwm_var->duty3;
@@ -156,7 +161,9 @@ void enable_pwm_1(void) {
 }
 
 int main(void) {
+    // load period
         while (1) {
+        // increment pwm per ch
         // PWM running in hardware
     }
 
