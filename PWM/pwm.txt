@@ -6,7 +6,7 @@ setting a output on the pins.
 
 Theres 8 relevant registers for PWM timing:
 
-SCT0→MATCHREL   | Load the values
+SCT0→MATCHREL     | Load the values
 SCT0→EV[n].STATE  | Sets enables event n
 SCT0→EV[n].CTRL   | Sets trigger mode & Match reg
 SCT0→OUT[n].SET   | Select which event sets
