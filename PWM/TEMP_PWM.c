@@ -53,6 +53,7 @@ void pwm_init(pwm_var *pwm_var) {
     // set events for duty / for my self to correct
     // Event 1: Match 1 → CLEAR output for EV[CTRL] bit 0:3
     // (Reminder) 0. 0000 / 1. 0001 / 2. 0010 / 3. 0011 n.. (n << 0) = 0x0, 0x1, 0x2 .. 
+    
     SCT0->EV[1].STATE = 0xFFFFFFFF; 
     SCT0->EV[1].CTRL  = (1 << 0) | (1 << 12); 
 
