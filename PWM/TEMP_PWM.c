@@ -25,8 +25,8 @@ typedef struct {
 void pwm_init(pwm_var *pwm_var) {
     // Enable clocks for SCT, SWM, AND GPIO
     SYSCON->SYSAHBCLKCTRL0 |= (1 << 8)   // SCT clock
-                           |  (1 << 7)   // SWM clock
-                           |  (1 << 6);  // GPIO clock ← ADD THIS!
+                           |  (1 << 7);   // SWM clock
+    
     // Reset SCT
     SYSCON->PRESETCTRL0 &= ~(1 << 8);
     SYSCON->PRESETCTRL0 |=  (1 << 8);
@@ -47,14 +47,14 @@ void pwm_init(pwm_var *pwm_var) {
     SCT0->CTRL = (1 << 2) | (1 << 3);  // HALT | CLRCTR (write both at once)
 
     // Event 0: Match 0 → SET output
-    SCT0->EV[0].STATE = 0xFFFFFFFF;
+    SCT0->EV[0].STATE = 0xFFFFFFFF; // not sure what this is. 
     SCT0->EV[0].CTRL  = (0 << 0) | (1 << 12); 
     
     // set events for duty / for my self to correct
     // Event 1: Match 1 → CLEAR output for EV[CTRL] bit 0:3
     // (Reminder) 0. 0000 / 1. 0001 / 2. 0010 / 3. 0011 n.. (n << 0) = 0x0, 0x1, 0x2 .. 
     SCT0->EV[1].STATE = 0xFFFFFFFF; 
-    SCT0->EV[1].CTRL  = (1 << 0) | (1 << 12);
+    SCT0->EV[1].CTRL  = (1 << 0) | (1 << 12); 
 
     SCT0->EV[2].STATE = 0xFFFFFFFF; 
     SCT0->EV[2].CTRL  = (2 << 0) | (1 << 12);
