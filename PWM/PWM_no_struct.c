@@ -134,7 +134,9 @@ int main(void) {
     pwm_pin(3, 10);
     pwm_pin(2, 3);
     set_pwm_freq(PWM_freq);  
-    uint32_t pwm_d[6];
+
+    // find a way to initialize
+    uint32_t pwm_d[6] = {0, 0, 0, 0, 0, 0};
     pwm_d[0] = 50;
     pwm_d[2] = 50;
     pwm_d[3] = 50;
