@@ -159,3 +159,26 @@ int main(void) {
     while(1){
     }
 }
+
+
+
+
+// void pwm_pin(uint8_t ch, uint8_t pin) {
+//     if (ch > 5 || pin > 31) return;
+
+//     // Register pointers live in flash (const)
+//     static volatile uint32_t * const regs[] = {
+//         &SWM0->PINASSIGN.PINASSIGN7,   // ch0
+//         &SWM0->PINASSIGN.PINASSIGN8,   // ch1
+//         &SWM0->PINASSIGN.PINASSIGN8,   // ch2
+//         &SWM0->PINASSIGN.PINASSIGN8,   // ch3
+//         &SWM0->PINASSIGN.PINASSIGN8,   // ch4
+//         &SWM0->PINASSIGN.PINASSIGN9    // ch5
+//     };
+//     static const uint8_t shifts[] = {24, 0, 8, 16, 24, 0};
+
+//     uint32_t shift = shifts[ch];
+//     uint32_t mask  = ~(0xFFU << shift);
+
+//     *regs[ch] = (*regs[ch] & mask) | ((uint32_t)pin << shift);
+// }
