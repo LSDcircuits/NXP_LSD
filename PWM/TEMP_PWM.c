@@ -101,6 +101,15 @@ void set_pwm_ch5(uint32_t pin){
     SWM0->PINASSIGN.PINASSIGN9 = (SWM0->PINASSIGN.PINASSIGN9  & ~(0xFFU << 0))  | (pin << 0);
 }
 
+void pwm_pin(uint8_t chanel, uint8_t pin){
+    if      (chanel == 0) set_pwm_ch0(pin);
+    else if (chanel == 1) set_pwm_ch1(pin);
+    else if (chanel == 2) set_pwm_ch2(pin);
+    else if (chanel == 3) set_pwm_ch3(pin);
+    else if (chanel == 4) set_pwm_ch4(pin);
+    else if (chanel == 5) set_pwm_ch5(pin);
+}
+
 //Table 125 - for the register overview to fidn tables
 //Registers to check to get freq for SCT TIMER & NO EXTERNAL CLOCK
 // MAINCLKSEL[1:0]
@@ -108,19 +117,25 @@ void set_pwm_ch5(uint32_t pin){
 // SCTCLKSEL[1:0]
 // SCTCLKDIV[0-255]
 
-get_clk_freq(uint8_t freq){
-    uint32_t ext_sel = (SYSCON->EXTCLKSEL & 0x01); 
-    uint32_t main_sel = (SYSCON->MAINCLKSEL & 0x03);
-    uint32_t main_pll = (SYSCON->MAINCLKPPLSEL & 0x00);
-    uint32_t sct_sel = (SYSCON->SCTCLKSEL & 0x01);
-    uint32_t div = (SYSCON->SCTCLKDIV);
+uint32_t get_clk_freq(){
 
+    uint32_t main_sel = (SYSCON->MAINCLKSEL & 0x03);    // 0x03 & 0x03 = 0x03
+    uint32_t main_pll = (SYSCON->MAINCLKPLLSEL & 0x01); // 0x00 & 0x01 = 0x00   
+    uint32_t sct_sel  = (SYSCON->SCTCLKSEL & 0x03);     // 0x01 & 0x03 = 0x01
+    uint32_t sct_div  = (SYSCON->SCTCLKDIV & 0xFF);     // 0-255 & 0xFF clean reserve bits
+    // other configs to be set late rin the future 
+    if (sct_div == 0) return 0;
+    if (main_sel == 3 && main_pll == 0 && sct_sel == 1){
+        return 12000000/ sct_div; }
+    return 0;
 }
 
 void set_pwm_freq(uint32_t freq) {
-    uint32_t period = CLK_freq/(freq);
+    uint32_t clk = get_clk_freq;
+    if(clk == 0) return;
+    uint32_t period = clk/(freq);
     SCT0->MATCHREL[0] = period - 1;
-    // , optional IOCON->PIO0[pin] = 0x80;   // DIGIMODE = 1, FUNC = 0 (GPIO/SWM digital), no pull-up
+    // optional IOCON->PIO0[pin] = 0x80;   // DIGIMODE = 1, FUNC = 0 (GPIO/SWM digital), no pull-up
 }
 
 void set_pwm_duty(uint32_t pwm_duty[6]){
@@ -130,15 +145,6 @@ void set_pwm_duty(uint32_t pwm_duty[6]){
     SCT0->MATCHREL[4] = (SCT0->MATCHREL[0] * pwm_duty[3]/100);
     SCT0->MATCHREL[5] = (SCT0->MATCHREL[0] * pwm_duty[4]/100);
     SCT0->MATCHREL[6] = (SCT0->MATCHREL[0] * pwm_duty[5]/100);
-}
-
-void pwm_pin(uint8_t chanel, uint8_t pin){
-    if      (chanel == 0) set_pwm_ch0(pin);
-    else if (chanel == 1) set_pwm_ch1(pin);
-    else if (chanel == 2) set_pwm_ch2(pin);
-    else if (chanel == 3) set_pwm_ch3(pin);
-    else if (chanel == 4) set_pwm_ch4(pin);
-    else if (chanel == 5) set_pwm_ch5(pin);
 }
 
 int main(void) {
