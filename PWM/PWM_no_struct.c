@@ -11,7 +11,7 @@ void enable_pwm(void) {
     SCT0->CTRL &= ~((1 << 2) | (1 << 3));
 }
 
-void pwm_init() {
+void pwm_out_init() {
 
     SYSCON->SYSAHBCLKCTRL0 |= (1 << 8)   
                            |  (1 << 7);  
