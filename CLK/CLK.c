@@ -10,7 +10,7 @@ void clock_init_fro_30mhz(void) {
     // 3. Ensure main clock is FRO (it is by default, but be explicit)
     SYSCON->MAINCLKSEL = 0;
     
-    // 4. Set divider to 1 (full 30MHz)
+    // 4. Set divider to 1 
     SYSCON->SYSAHBCLKDIV = 1;
     
     // 5. Update flash wait states for 30MHz (1 WS required)
@@ -18,5 +18,5 @@ void clock_init_fro_30mhz(void) {
     
     // Update CMSIS variable
     SystemCoreClock = 30000000;
-} 
+} // clock tree needs to be properly defined. 
 
