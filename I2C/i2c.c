@@ -1,5 +1,5 @@
 #include "LPC845.h"
-
+// just a start, still to complete pwm input and documentation 
 void I2C_Init(void)
 {
     SYSCON->SYSAHBCLKCTRL0 |= (1 << 5);  // I2C0 clock
